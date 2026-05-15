@@ -19,7 +19,7 @@ jobs:
           enable-caching: true
 
       - name: Install dependencies
-        run: uv sync --locked
+        run: uv sync --locked --extra dev
 
       - name: Run mypy
         run: uv run mypy src --config-file pyproject.toml
