@@ -152,3 +152,6 @@ src/.env.production
 # Claude Code internal data:
 .claude/
 
+# Runtime generated directories:
+src/app/logs/
+

@@ -30,5 +30,5 @@ async def on_job_start(ctx: dict[str, Any]) -> None:
 
 
 async def on_job_end(ctx: dict[str, Any]) -> None:
-    logging.info("Job Competed")
+    logging.info("Job Completed")
     structlog.contextvars.clear_contextvars()

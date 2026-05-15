@@ -57,24 +57,6 @@ class SQLiteSettings(DatabaseSettings):
     SQLITE_ASYNC_PREFIX: str = "sqlite+aiosqlite:///"
 
 
-class MySQLSettings(DatabaseSettings):
-    MYSQL_USER: str = "username"
-    MYSQL_PASSWORD: str = "password"
-    MYSQL_SERVER: str = "localhost"
-    MYSQL_PORT: int = 5432
-    MYSQL_DB: str = "dbname"
-    MYSQL_SYNC_PREFIX: str = "mysql://"
-    MYSQL_ASYNC_PREFIX: str = "mysql+aiomysql://"
-    MYSQL_URL: str | None = None
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def MYSQL_URI(self) -> str:
-        credentials = f"{self.MYSQL_USER}:{self.MYSQL_PASSWORD}"
-        location = f"{self.MYSQL_SERVER}:{self.MYSQL_PORT}/{self.MYSQL_DB}"
-        return f"{credentials}@{location}"
-
-
 class PostgresSettings(DatabaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
@@ -98,10 +80,6 @@ class FirstUserSettings(BaseSettings):
     ADMIN_EMAIL: str = "admin@admin.com"
     ADMIN_USERNAME: str = "admin"
     ADMIN_PASSWORD: str = "!Ch4ng3Th1sP4ssW0rd!"
-
-
-class TestSettings(BaseSettings):
-    ...
 
 
 class RedisCacheSettings(BaseSettings):
@@ -181,7 +159,6 @@ class Settings(
     PostgresSettings,
     CryptSettings,
     FirstUserSettings,
-    TestSettings,
     RedisCacheSettings,
     ClientSideCacheSettings,
     RedisQueueSettings,

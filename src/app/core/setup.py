@@ -131,7 +131,6 @@ def lifespan_factory(
     return lifespan
 
 
-# -------------- application --------------
 def create_application(
     router: APIRouter,
     settings: (

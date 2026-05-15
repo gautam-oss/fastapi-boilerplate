@@ -1,4 +1,3 @@
-# app/middleware/request_id.py
 import uuid
 
 import structlog
