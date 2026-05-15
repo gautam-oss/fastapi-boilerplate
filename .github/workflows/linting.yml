@@ -6,21 +6,20 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.11
+      - uses: actions/checkout@v4
 
-    - name: Install uv
-      run: pip install uv
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Create venv
-      run: uv venv
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-caching: true
 
-    - name: Install package with dev dependencies
-      run: uv pip install -e ".[dev]"
+      - name: Install dependencies
+        run: uv sync --locked
 
-    - name: Run Ruff
-      run: uv run ruff check src
+      - name: Run Ruff
+        run: uv run ruff check src

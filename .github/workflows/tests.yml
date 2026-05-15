@@ -6,25 +6,71 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.11
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Install uv
-      run: pip install uv
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-caching: true
 
-    - name: Create venv
-      run: uv venv
+      - name: Install dependencies
+        run: uv sync --locked
 
-    - name: Install package with dev dependencies
-      run: uv pip install -e ".[dev]"
+      - name: Run Alembic migrations
+        run: cd src && uv run alembic upgrade head
+        env:
+          ENVIRONMENT: local
+          SECRET_KEY: test-secret-key-for-ci-only
+          POSTGRES_SERVER: localhost
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_PORT: 5432
 
-    - name: Run tests
-      run: uv run pytest
-      env:
-        ENVIRONMENT: local
-        SECRET_KEY: test-secret-key-for-testing-only
+      - name: Run tests
+        run: uv run pytest
+        env:
+          ENVIRONMENT: local
+          SECRET_KEY: test-secret-key-for-ci-only
+          POSTGRES_SERVER: localhost
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_PORT: 5432
+          REDIS_CACHE_HOST: localhost
+          REDIS_CACHE_PORT: 6379
+          REDIS_QUEUE_HOST: localhost
+          REDIS_QUEUE_PORT: 6379
+          REDIS_RATE_LIMIT_HOST: localhost
+          REDIS_RATE_LIMIT_PORT: 6379
