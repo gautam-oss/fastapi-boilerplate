@@ -1,4 +1,4 @@
-# Pull Request Template for FastAPI-boilerplate
+# Pull Request
 
 ## Description
 Please provide a clear and concise description of what your pull request is about.
